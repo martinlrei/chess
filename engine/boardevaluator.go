@@ -61,7 +61,7 @@ func pieceValue(piece chessgame.ChessPiece) int {
 		return 5
 	}
 	if piece.GetPieceType() == chessgame.QUEEN {
-		return 8
+		return 7
 	}
-	return 10
+	return 8
 }
