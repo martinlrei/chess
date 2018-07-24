@@ -32,3 +32,62 @@ func selectBestMove(side chessgame.Side, board *chessgame.ChessBoard, validMoves
 	}
 	return bestFromCoord, bestToCoord
 }
+
+func evaluateAllMoves(side chessgame.Side, board *chessgame.ChessBoard, useMin bool, maxDepth int, currentDepth int) int {
+	if maxDepth == currentDepth {
+		return evaluateBoard(board, side)
+	}
+	score := 0
+	first := true
+	for row := 0; row < 8; row++ {
+		for col := 0; col < 8; col++ {
+			if board.BoardPieces[row][col] != nil && board.BoardPieces[row][col].GetPieceSide() == side {
+				moves := board.BoardPieces[row][col].ValidMoves(board)
+				for toCoord, _ := range moves {
+					fromCoord := chessgame.Coordinate{row, col}
+					formerToPiece := board.BoardPieces[toCoord.Row][toCoord.Column]
+					board.BoardPieces[toCoord.Row][toCoord.Column] = board.BoardPieces[fromCoord.Row][fromCoord.Column]
+					board.BoardPieces[fromCoord.Row][fromCoord.Column] = nil
+					oppositeSide := getOppositeSide(side)
+					moveScore := evaluateAllMoves(oppositeSide, board, !useMin, maxDepth, currentDepth+1)
+					score = compareScores(useMin, score, moveScore, first)
+					first = false
+					board.BoardPieces[fromCoord.Row][fromCoord.Column] = board.BoardPieces[toCoord.Row][toCoord.Column]
+					board.BoardPieces[toCoord.Row][toCoord.Column] = formerToPiece
+				}
+			}
+		}
+	}
+	return score
+}
+
+func compareScores(useMin bool, currentScore int, challengerScore int, first bool) int {
+	if first {
+		return challengerScore
+	}
+	if useMin {
+		return getMin(currentScore, challengerScore)
+	}
+	return getMax(currentScore, challengerScore)
+}
+
+func getMin(a int, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func getMax(a int, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func getOppositeSide(side chessgame.Side) chessgame.Side {
+	if side == chessgame.WHITE {
+		return chessgame.BLACK
+	}
+	return chessgame.WHITE
+}
