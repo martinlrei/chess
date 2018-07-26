@@ -17,7 +17,7 @@ const (
 )
 
 func MakeEvaluatedMove(side chessgame.Side, board *chessgame.ChessBoard, validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool) (chessgame.Coordinate, chessgame.Coordinate) {
-	return selectBestMove(side, board, validMoves)
+	return selectBestMove(side, board, validMoves, 3)
 }
 
 func MakeRandomMove(validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool) (chessgame.Coordinate, chessgame.Coordinate) {

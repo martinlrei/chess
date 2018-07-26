@@ -26,8 +26,8 @@ func evaluatePiece(board *chessgame.ChessBoard, piece chessgame.ChessPiece) int 
 			totalPieceScore += pieceValue(board.BoardPieces[move.Row][move.Column])
 		}
 	}
-	if isInMiddle(piece) {
-		totalPieceScore += 5
+	if isInMiddle(piece) && piece.GetPieceType() == chessgame.KNIGHT || piece.GetPieceType() == chessgame.PAWN {
+		totalPieceScore += 15
 	}
 	totalPieceScore -= len(chessgame.GetThreateningCoordinates(board, piece.GetCurrentCoordinates(), piece.GetPieceSide())) * pieceValue(piece)
 	// get supporting pieces by calling GetThreateningCoordinates for piece's side but opposite coordinates
