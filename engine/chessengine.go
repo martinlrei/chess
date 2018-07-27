@@ -16,8 +16,12 @@ const (
 	EXPERT
 )
 
-func MakeEvaluatedMove(side chessgame.Side, board *chessgame.ChessBoard, validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool) (chessgame.Coordinate, chessgame.Coordinate) {
-	return selectBestMove(side, board, validMoves, 3)
+func MakeEvaluatedMove(side chessgame.Side, board *chessgame.ChessBoard, validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool, difficulty EngineDifficulty) (chessgame.Coordinate, chessgame.Coordinate) {
+	if difficulty == BASIC {
+		return MakeRandomMove(validMoves)
+	}
+	depth := depthFromDifficulty(difficulty)
+	return selectBestMove(side, board, validMoves, depth)
 }
 
 func MakeRandomMove(validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool) (chessgame.Coordinate, chessgame.Coordinate) {
@@ -42,4 +46,17 @@ func MakeRandomMove(validMoves map[chessgame.Coordinate]map[chessgame.Coordinate
 		counter++
 	}
 	return fromCoord, toCoord
+}
+
+func depthFromDifficulty(difficulty EngineDifficulty) int {
+	if difficulty == EASY {
+		return 0
+	}
+	if difficulty == MEDIUM {
+		return 1
+	}
+	if difficulty == HARD {
+		return 2
+	}
+	return 3
 }

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"chess/engine"
 	"chess/game"
 	"fmt"
 )
@@ -13,13 +14,20 @@ func main() {
 	for feedBack != "white" && feedBack != "black" {
 		fmt.Scanln(&feedBack)
 	}
+	fmt.Println("Pick a difficulty. Enter \"basic\" \"easy\" \"medium\" \"hard\" or \"expert\"")
+	var difficultyString string
+	fmt.Scanln(&difficultyString)
+	for difficultyString != "basic" && difficultyString != "easy" && difficultyString != "medium" && difficultyString != "hard" && difficultyString != "expert" {
+		fmt.Scanln(&difficultyString)
+	}
+	difficulty := difficultyFromString(difficultyString)
 	humanSide := chessgame.WHITE
 	aiSide := chessgame.BLACK
 	if feedBack == "black" {
 		humanSide = chessgame.BLACK
 		aiSide = chessgame.WHITE
 	}
-	aiPlayer := NewCommandLineAI(aiSide)
+	aiPlayer := NewCommandLineAI(aiSide, difficulty)
 	humanPlayer := CommandLinePlayer{humanSide}
 	game := chessgame.NewChessGame(aiPlayer, humanPlayer)
 	if aiPlayer.GetSide() == chessgame.BLACK {
@@ -100,4 +108,20 @@ func PrintPiece(piece chessgame.ChessPiece) {
 	} else if piece.GetPieceSide() == chessgame.WHITE && piece.GetPieceType() == chessgame.KING {
 		fmt.Printf("wK")
 	}
+}
+
+func difficultyFromString(difficultyStr string) chessengine.EngineDifficulty {
+	if difficultyStr == "basic" {
+		return chessengine.BASIC
+	}
+	if difficultyStr == "easy" {
+		return chessengine.EASY
+	}
+	if difficultyStr == "medium" {
+		return chessengine.MEDIUM
+	}
+	if difficultyStr == "hard" {
+		return chessengine.HARD
+	}
+	return chessengine.EXPERT
 }

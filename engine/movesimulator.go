@@ -16,12 +16,12 @@ func selectBestMove(side chessgame.Side, board *chessgame.ChessBoard, validMoves
 			formerToPiece := board.BoardPieces[to.Row][to.Column]
 			board.BoardPieces[to.Row][to.Column] = board.BoardPieces[from.Row][from.Column]
 			board.BoardPieces[from.Row][from.Column] = nil
-			score := evaluateAllMoves(getOppositeSide(side), board, useMin, depth, 1)
+			score := evaluateAllMoves(getOppositeSide(side), board, useMin, depth, 0)
 			if board.BoardPieces[to.Row][to.Column] != nil && board.GetPieceSide(to) != side {
 				if useMin {
-					score -= pieceValue(board.BoardPieces[to.Row][to.Column]) * 10
+					score -= pieceValue(board.BoardPieces[to.Row][to.Column]) * 15
 				} else {
-					score += pieceValue(board.BoardPieces[to.Row][to.Column]) * 10
+					score += pieceValue(board.BoardPieces[to.Row][to.Column]) * 15
 				}
 			}
 			currentScore = compareScores(useMin, currentScore, score, first)

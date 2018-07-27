@@ -5,11 +5,11 @@ import (
 	"chess/engine"
 	"chess/game"
 	"fmt"
-	"time"
 )
 
 type CommandLineAI struct {
-	side chessgame.Side
+	side       chessgame.Side
+	difficulty chessengine.EngineDifficulty
 }
 
 func (ai CommandLineAI) MakeMove(boardClone chessgame.ChessBoard, validMoves map[chessgame.Coordinate]map[chessgame.Coordinate]bool) (chessgame.Coordinate, chessgame.Coordinate) {
@@ -18,10 +18,8 @@ func (ai CommandLineAI) MakeMove(boardClone chessgame.ChessBoard, validMoves map
 		side = chessgame.BLACK
 	}
 	PrintBoard(boardClone, side)
-	duration := time.Second
-	time.Sleep(duration)
 	fmt.Println("\n")
-	return chessengine.MakeEvaluatedMove(ai.GetSide(), &boardClone, validMoves)
+	return chessengine.MakeEvaluatedMove(ai.GetSide(), &boardClone, validMoves, ai.difficulty)
 }
 
 func (ai CommandLineAI) PromotePawn() chessgame.PieceType {
@@ -32,6 +30,6 @@ func (ai CommandLineAI) GetSide() chessgame.Side {
 	return ai.side
 }
 
-func NewCommandLineAI(side chessgame.Side) CommandLineAI {
-	return CommandLineAI{side}
+func NewCommandLineAI(side chessgame.Side, difficulty chessengine.EngineDifficulty) CommandLineAI {
+	return CommandLineAI{side, difficulty}
 }

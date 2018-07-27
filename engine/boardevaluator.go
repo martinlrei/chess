@@ -26,16 +26,17 @@ func evaluatePiece(board *chessgame.ChessBoard, piece chessgame.ChessPiece) int 
 			totalPieceScore += pieceValue(board.BoardPieces[move.Row][move.Column])
 		}
 	}
-	if isInMiddle(piece) && piece.GetPieceType() == chessgame.KNIGHT || piece.GetPieceType() == chessgame.PAWN {
+	if isInMiddle(piece) && piece.GetPieceType() == chessgame.KNIGHT || piece.GetPieceType() == chessgame.PAWN || piece.GetPieceType() == chessgame.BISHOP {
 		totalPieceScore += 15
 	}
-	totalPieceScore -= len(chessgame.GetThreateningCoordinates(board, piece.GetCurrentCoordinates(), piece.GetPieceSide())) * pieceValue(piece)
+	totalPieceScore -= len(chessgame.GetThreateningCoordinates(board, piece.GetCurrentCoordinates(), piece.GetPieceSide())) * pieceValue(piece) * 10
 	// get supporting pieces by calling GetThreateningCoordinates for piece's side but opposite coordinates
 	oppositePieceSide := chessgame.WHITE
 	if piece.GetPieceSide() == chessgame.WHITE {
 		oppositePieceSide = chessgame.BLACK
 	}
-	totalPieceScore += len(chessgame.GetThreateningCoordinates(board, piece.GetCurrentCoordinates(), oppositePieceSide))
+	totalPieceScore += len(chessgame.GetThreateningCoordinates(board, piece.GetCurrentCoordinates(), oppositePieceSide)) * 7
+	totalPieceScore += kingInBackRow(piece)
 	return totalPieceScore
 }
 
@@ -49,19 +50,36 @@ func isInMiddle(piece chessgame.ChessPiece) bool {
 
 func pieceValue(piece chessgame.ChessPiece) int {
 	if piece.GetPieceType() == chessgame.PAWN {
-		return 1
-	}
-	if piece.GetPieceType() == chessgame.KNIGHT {
-		return 3
-	}
-	if piece.GetPieceType() == chessgame.BISHOP {
 		return 4
 	}
+	if piece.GetPieceType() == chessgame.KNIGHT {
+		return 10
+	}
+	if piece.GetPieceType() == chessgame.BISHOP {
+		return 11
+	}
 	if piece.GetPieceType() == chessgame.ROOK {
-		return 5
+		return 15
 	}
 	if piece.GetPieceType() == chessgame.QUEEN {
-		return 7
+		return 25
 	}
-	return 8
+	return 40
+}
+
+func kingInBackRow(piece chessgame.ChessPiece) int {
+	if piece.GetPieceType() != chessgame.KING {
+		return 0
+	}
+	coords := piece.GetCurrentCoordinates()
+	var baseRow int
+	if piece.GetPieceSide() == chessgame.WHITE {
+		baseRow = 0
+	} else {
+		baseRow = 7
+	}
+	if coords.Row == baseRow {
+		return 25
+	}
+	return -5
 }
